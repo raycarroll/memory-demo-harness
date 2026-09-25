@@ -46,7 +46,7 @@ personas:
     description: "Full-stack developer using Python/TypeScript"
     seed_file: ./seeds/developer.txt
 
-  busy-parent:
-    name: "Jamie - Busy Parent"
-    description: "Parent of two kids, juggling family and work-from-home schedule"
-    seed_file: ./seeds/busy-parent.txt
+  executive:
+    name: "Alex Morgan - VP of Operations"
+    description: "C-level executive managing operations, digital transformation, team leadership"
+    seed_file: ./seeds/executive.txt

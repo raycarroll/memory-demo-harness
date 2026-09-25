@@ -48,17 +48,18 @@ Demonstrates learning acceleration:
 
 **Key metrics:** Highlights, quality scores
 
-### 5. Family Helper (6 minutes)
-**Persona:** Busy Parent  
-**Best for:** Non-technical audiences, general public, families
+### 5. Executive Assistant (7 minutes)
+**Persona:** VP of Operations  
+**Best for:** Business executives, enterprise audiences, managers
 
-Shows everyday practical use:
-- Meal planning with dietary needs
-- Family activity suggestions
-- Shopping recommendations
-- Budget-conscious tips
+Shows executive productivity gains:
+- Board meeting preparation
+- Strategic reporting guidance
+- Facility visit prioritization
+- Cost reduction initiatives
+- Delegation planning
 
-**Key metrics:** Highlights, relevance, efficiency across topics
+**Key metrics:** Highlights, time savings, context retention across business areas
 
 ## How to Use
 

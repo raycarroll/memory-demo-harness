@@ -110,8 +110,8 @@ Start with context already loaded:
 
 ### 6. Demo Playback
 Pre-scripted conversations for presentations:
-- 5 built-in demos (Quick Wins, ROI, SRE, Onboarding, Family Helper)
-- Technical AND non-technical scenarios
+- 5 built-in demos (Quick Wins, ROI, SRE, Onboarding, Executive Assistant)
+- Technical AND business scenarios
 - Step-by-step with annotations
 - Highlights what to watch
 - Progress tracking

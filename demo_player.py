@@ -173,41 +173,41 @@ DEMO_SCRIPTS = {
         ]
     ),
 
-    "family-helper": DemoScript(
-        name="Family Helper - Everyday Life",
-        description="6-minute demo showing memory benefits for everyday tasks (non-technical)",
-        persona="busy-parent",
+    "executive-assistant": DemoScript(
+        name="Executive Assistant - Business Support",
+        description="7-minute demo showing memory benefits for executive decision-making",
+        persona="executive",
         memory_backend="dict",
         enable_judge=True,
         steps=[
             DemoStep(
-                user_message="I need dinner ideas for tonight that my kids will actually eat",
-                annotation="🏠 **Setup:** Agent learns about family (kids' ages, allergies, food preferences)",
-                wait_seconds=7.0,
+                user_message="I need to prepare for next week's board meeting - what should be on the agenda?",
+                annotation="💼 **Setup:** Agent learns role (VP Ops), meeting schedule, current initiatives",
+                wait_seconds=8.0,
                 highlight_metrics=["highlights"]
             ),
             DemoStep(
-                user_message="What ingredients do I need for that?",
-                annotation="💡 **Watch:** Left remembers the recipe context, Right asks 'for what?'",
-                wait_seconds=7.0,
+                user_message="What data should I include in my quarterly report?",
+                annotation="💡 **Watch:** Left knows digital transformation focus, Right asks 'which metrics?'",
+                wait_seconds=8.0,
                 highlight_metrics=["highlights", "tokens"]
             ),
             DemoStep(
-                user_message="Can you suggest activities for this Saturday?",
-                annotation="⚡ **Context-aware:** Left knows about soccer schedule and dog, Right gives generic ideas",
+                user_message="I'm traveling to our Ohio facility next week - what should I prioritize?",
+                annotation="⚡ **Context-aware:** Left recalls facilities + operational focus, Right gives generic travel tips",
                 wait_seconds=8.0,
                 highlight_metrics=["highlights", "scores"]
             ),
             DemoStep(
-                user_message="Where should I shop for those supplies?",
-                annotation="🎯 **Personalized:** Left suggests Target (knows preference), Right asks location/budget",
-                wait_seconds=7.0,
+                user_message="Help me draft talking points for the cost reduction initiative",
+                annotation="🎯 **Personalized:** Left references team size, efficiency goals; Right asks for background",
+                wait_seconds=8.0,
                 highlight_metrics=["scores", "token_savings"]
             ),
             DemoStep(
-                user_message="Any tips for keeping it affordable?",
-                annotation="📊 **Final:** Check cumulative savings - fewer clarifying questions, better answers",
-                wait_seconds=7.0,
+                user_message="What should I delegate to my department heads this week?",
+                annotation="📊 **Final:** Check cumulative efficiency - knows team structure, priorities, timeline",
+                wait_seconds=8.0,
                 highlight_metrics=["token_savings", "scores"]
             ),
         ]
