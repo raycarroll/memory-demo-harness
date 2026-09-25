@@ -294,9 +294,65 @@ with col2:
                             tokens_total = msg["tokens_in"] + msg["tokens_out"]
                             st.caption(f"🔢 {tokens_total:,} tokens ({msg['tokens_in']:,} in + {msg['tokens_out']:,} out)")
 
+# Helper function to execute a prompt (used by both demo and manual input)
+def execute_prompt(prompt: str, from_demo: bool = False):
+    """Execute a prompt through the dual driver."""
+    # Add user message to display
+    st.session_state.left_messages.append({"role": "user", "content": prompt})
+    st.session_state.right_messages.append({"role": "user", "content": prompt})
+
+    # Execute through dual driver
+    with st.spinner("Thinking..."):
+        try:
+            left_resp, right_resp, verdict = st.session_state.driver.execute(prompt)
+
+            # Add assistant responses with token counts
+            st.session_state.left_messages.append({
+                "role": "assistant",
+                "content": left_resp.content,
+                "tokens_in": left_resp.tokens_in,
+                "tokens_out": left_resp.tokens_out
+            })
+            st.session_state.right_messages.append({
+                "role": "assistant",
+                "content": right_resp.content,
+                "tokens_in": right_resp.tokens_in,
+                "tokens_out": right_resp.tokens_out
+            })
+
+            # Add judge verdict if available
+            if verdict:
+                st.session_state.left_messages.append({
+                    "role": "judge",
+                    "score": verdict.left_score,
+                    "justification": verdict.left_justification,
+                    "segments": verdict.memory_influenced_segments
+                })
+                st.session_state.right_messages.append({
+                    "role": "judge",
+                    "score": verdict.right_score,
+                    "justification": verdict.right_justification
+                })
+
+            # Clear pending demo step if this was from demo
+            if from_demo and "demo_step_to_execute" in st.session_state:
+                st.session_state.demo_step_to_execute = None
+
+            st.rerun()
+
+        except Exception as e:
+            st.error(f"Error: {e}")
+            # Remove the user messages we added
+            st.session_state.left_messages.pop()
+            st.session_state.right_messages.pop()
+            if from_demo and "demo_step_to_execute" in st.session_state:
+                st.session_state.demo_step_to_execute = None
+            st.rerun()
+
 # Input area (below columns)
 st.divider()
 
+# Demo controls (shown only in Demo Playback mode)
 if mode == "Demo Playback":
     # Initialize demo player
     if "demo_player" not in st.session_state:
@@ -354,126 +410,34 @@ if mode == "Demo Playback":
             text=f"Step {progress['step']}/{progress['total']}"
         )
 
-        # Execute pending step
+        # Execute pending demo step
         if st.session_state.get("demo_step_to_execute"):
             step = st.session_state.demo_step_to_execute
 
             # Show annotation
             st.info(f"**{step.annotation}**")
 
-            # Execute the step (same as user-driven)
-            prompt = step.user_message
+            # Show suggested metrics to highlight
+            if step.highlight_metrics:
+                st.caption(f"👁️ Watch: {', '.join(step.highlight_metrics)}")
 
-            # Add user message
-            st.session_state.left_messages.append({"role": "user", "content": prompt})
-            st.session_state.right_messages.append({"role": "user", "content": prompt})
+            # Execute the demo step
+            execute_prompt(step.user_message, from_demo=True)
 
-            # Execute through dual driver
-            with st.spinner("Thinking..."):
-                try:
-                    left_resp, right_resp, verdict = st.session_state.driver.execute(prompt)
+    st.divider()
 
-                    # Add assistant responses with token counts
-                    st.session_state.left_messages.append({
-                        "role": "assistant",
-                        "content": left_resp.content,
-                        "tokens_in": left_resp.tokens_in,
-                        "tokens_out": left_resp.tokens_out
-                    })
-                    st.session_state.right_messages.append({
-                        "role": "assistant",
-                        "content": right_resp.content,
-                        "tokens_in": right_resp.tokens_in,
-                        "tokens_out": right_resp.tokens_out
-                    })
-
-                    # Add judge verdict if available
-                    if verdict:
-                        st.session_state.left_messages.append({
-                            "role": "judge",
-                            "score": verdict.left_score,
-                            "justification": verdict.left_justification,
-                            "segments": verdict.memory_influenced_segments
-                        })
-                        st.session_state.right_messages.append({
-                            "role": "judge",
-                            "score": verdict.right_score,
-                            "justification": verdict.right_justification
-                        })
-
-                    # Clear the pending step
-                    st.session_state.demo_step_to_execute = None
-
-                    # Rerun to show results and allow next step
-                    st.rerun()
-
-                except Exception as e:
-                    st.error(f"Error: {e}")
-                    # Remove the user message we added
-                    st.session_state.left_messages.pop()
-                    st.session_state.right_messages.pop()
-                    st.session_state.demo_step_to_execute = None
-                    st.rerun()
-
-    # Show suggested metrics to highlight (from step config)
-    if st.session_state.get("demo_step_to_execute"):
-        step = st.session_state.demo_step_to_execute
-        if step.highlight_metrics:
-            st.caption(f"👁️ Watch: {', '.join(step.highlight_metrics)}")
-
-elif mode == "User-Driven":
-    prompt = st.chat_input("Type your message here...")
-
-    if prompt:
-        # Add user message to display immediately
-        st.session_state.left_messages.append({"role": "user", "content": prompt})
-        st.session_state.right_messages.append({"role": "user", "content": prompt})
-
-        # Execute through dual driver
-        with st.spinner("Thinking..."):
-            try:
-                left_resp, right_resp, verdict = st.session_state.driver.execute(prompt)
-
-                # Add assistant responses with token counts
-                st.session_state.left_messages.append({
-                    "role": "assistant",
-                    "content": left_resp.content,
-                    "tokens_in": left_resp.tokens_in,
-                    "tokens_out": left_resp.tokens_out
-                })
-                st.session_state.right_messages.append({
-                    "role": "assistant",
-                    "content": right_resp.content,
-                    "tokens_in": right_resp.tokens_in,
-                    "tokens_out": right_resp.tokens_out
-                })
-
-                # Add judge verdict if available
-                if verdict:
-                    st.session_state.left_messages.append({
-                        "role": "judge",
-                        "score": verdict.left_score,
-                        "justification": verdict.left_justification,
-                        "segments": verdict.memory_influenced_segments
-                    })
-                    st.session_state.right_messages.append({
-                        "role": "judge",
-                        "score": verdict.right_score,
-                        "justification": verdict.right_justification
-                    })
-
-                # No st.rerun() needed - Streamlit auto-reruns on widget interaction
-
-            except Exception as e:
-                st.error(f"Error: {e}")
-                # Remove the user message we added
-                st.session_state.left_messages.pop()
-                st.session_state.right_messages.pop()
-                # Rerun on error to clear the failed state
-                st.rerun()
-
+# Chat input (always visible in all modes)
+if mode == "Simulated":
+    st.info("🤖 Simulated mode coming soon - use 'User-Driven' or 'Demo Playback' for now")
+    prompt = None  # Disable input in simulated mode for now
 else:
-    st.info("🤖 Simulated mode coming in Phase 3 - select 'User-Driven' for now")
+    # Show chat input for both User-Driven and Demo Playback modes
+    input_placeholder = "Type your message here..." if mode == "User-Driven" else "Type to send manual message (or use Next Step above)..."
+    prompt = st.chat_input(input_placeholder)
+
+# Handle manual input (works in both User-Driven and Demo Playback modes)
+if prompt:
+    execute_prompt(prompt, from_demo=False)
 
 # Memory Inspector Dialog
 @st.dialog("🔍 Memory Inspector", width="large")
