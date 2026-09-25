@@ -172,6 +172,46 @@ DEMO_SCRIPTS = {
             ),
         ]
     ),
+
+    "family-helper": DemoScript(
+        name="Family Helper - Everyday Life",
+        description="6-minute demo showing memory benefits for everyday tasks (non-technical)",
+        persona="busy-parent",
+        memory_backend="dict",
+        enable_judge=True,
+        steps=[
+            DemoStep(
+                user_message="I need dinner ideas for tonight that my kids will actually eat",
+                annotation="🏠 **Setup:** Agent learns about family (kids' ages, allergies, food preferences)",
+                wait_seconds=7.0,
+                highlight_metrics=["highlights"]
+            ),
+            DemoStep(
+                user_message="What ingredients do I need for that?",
+                annotation="💡 **Watch:** Left remembers the recipe context, Right asks 'for what?'",
+                wait_seconds=7.0,
+                highlight_metrics=["highlights", "tokens"]
+            ),
+            DemoStep(
+                user_message="Can you suggest activities for this Saturday?",
+                annotation="⚡ **Context-aware:** Left knows about soccer schedule and dog, Right gives generic ideas",
+                wait_seconds=8.0,
+                highlight_metrics=["highlights", "scores"]
+            ),
+            DemoStep(
+                user_message="Where should I shop for those supplies?",
+                annotation="🎯 **Personalized:** Left suggests Target (knows preference), Right asks location/budget",
+                wait_seconds=7.0,
+                highlight_metrics=["scores", "token_savings"]
+            ),
+            DemoStep(
+                user_message="Any tips for keeping it affordable?",
+                annotation="📊 **Final:** Check cumulative savings - fewer clarifying questions, better answers",
+                wait_seconds=7.0,
+                highlight_metrics=["token_savings", "scores"]
+            ),
+        ]
+    ),
 }
 
 class DemoPlayer:

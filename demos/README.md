@@ -48,6 +48,18 @@ Demonstrates learning acceleration:
 
 **Key metrics:** Highlights, quality scores
 
+### 5. Family Helper (6 minutes)
+**Persona:** Busy Parent  
+**Best for:** Non-technical audiences, general public, families
+
+Shows everyday practical use:
+- Meal planning with dietary needs
+- Family activity suggestions
+- Shopping recommendations
+- Budget-conscious tips
+
+**Key metrics:** Highlights, relevance, efficiency across topics
+
 ## How to Use
 
 ### In the UI

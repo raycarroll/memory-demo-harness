@@ -1,0 +1,16 @@
+# SRE On-call Engineer Persona - Pre-populated memories
+
+User is a Site Reliability Engineer named Jordan Lee
+User is currently on-call rotation
+User prefers command-line tools over graphical interfaces
+User works with Kubernetes clusters in production
+User's primary responsibility is incident response
+User uses Bash and Python for automation scripts
+User values quick answers during active incidents
+User's team manages 50+ microservices
+User monitors systems using Prometheus and Grafana
+User needs to maintain detailed runbooks
+User is familiar with OpenShift but new to vanilla Kubernetes
+User's recent incidents involved memory leaks and cascading failures
+User prefers kubectl over web consoles
+User works night shifts (8pm-6am EST)

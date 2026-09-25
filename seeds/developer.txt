@@ -1,0 +1,16 @@
+# Software Developer Persona - Pre-populated memories
+
+User is a Full-stack Developer named Sam Rodriguez
+User works primarily in Python and TypeScript
+User prefers React for frontend development
+User uses FastAPI for backend services
+User's team follows agile/scrum methodology
+User has 3 years of professional experience
+User is comfortable with Git and GitHub workflows
+User prefers VS Code as their IDE
+User values clean code and unit testing
+User is learning about microservices architecture
+User's current project is building a SaaS dashboard
+User uses PostgreSQL for relational data
+User has basic Docker knowledge but new to Kubernetes
+User prefers async/await over callbacks in JavaScript

@@ -1,0 +1,15 @@
+# Data Scientist Persona - Pre-populated memories
+
+User is a Senior Data Scientist named Alex Chen
+User works in ML Ops on Kubernetes
+User prefers Python over R for data analysis
+User uses Jupyter notebooks for exploration
+User values concrete examples over theoretical explanations
+User prioritizes reproducibility in workflows
+User has limited GPU budget for model training
+User's team uses MLflow for experiment tracking
+User is learning to deploy models to production
+User prefers pandas and scikit-learn for standard ML tasks
+User has experience with PyTorch but new to TensorFlow
+User works on a team of 5 data scientists
+User's main project is building customer churn prediction models

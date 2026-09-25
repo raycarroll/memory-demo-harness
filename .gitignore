@@ -10,9 +10,9 @@ venv/
 dist/
 build/
 
-# Memory storage
-memory/
-*.txt
+# Memory storage (but not seed files)
+memory/*.txt
+!seeds/*.txt
 
 # Environment
 .env
