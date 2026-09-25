@@ -1,0 +1,47 @@
+# Agent backend definitions
+agents:
+  openai-chat:
+    type: direct
+    provider: openai
+    model: gpt-4o
+    system_prompt: "You are a helpful assistant."
+
+  claude-sonnet:
+    type: direct
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    system_prompt: "You are a helpful coding assistant."
+
+# Memory backend definitions
+memory:
+  none:
+    type: none
+
+  dict:
+    type: dict
+
+  text-file:
+    type: file
+    path: ./memory/facts.txt
+
+# User personas for pre-populated demos
+personas:
+  none:
+    name: "None (Empty)"
+    description: "Start with no pre-populated memories"
+    seed_file: null
+
+  data-scientist:
+    name: "Alex Chen - Data Scientist"
+    description: "Senior Data Scientist working on ML Ops, prefers Python"
+    seed_file: ./seeds/data-scientist.txt
+
+  sre-oncall:
+    name: "Jordan Lee - SRE"
+    description: "On-call Site Reliability Engineer, command-line focused"
+    seed_file: ./seeds/oncall-engineer.txt
+
+  developer:
+    name: "Sam Rodriguez - Full-stack Developer"
+    description: "Full-stack developer using Python/TypeScript"
+    seed_file: ./seeds/developer.txt

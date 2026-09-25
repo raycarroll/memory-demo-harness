@@ -1,0 +1,21 @@
+# Example: MemoryHub MCP Backend
+# https://github.com/redhat-et/memory-hub
+
+agents:
+  openai-chat:
+    type: direct
+    provider: openai
+    model: gpt-4o
+
+memory:
+  memoryhub:
+    type: memoryhub
+    url: http://memory-hub-mcp.memory-hub-mcp.svc:8080/mcp/
+    # Or local: http://localhost:8080/mcp/
+    api_key: ${MEMORYHUB_API_KEY}
+    user_id: demo-user
+
+personas:
+  data-scientist:
+    name: "Alex Chen - Data Scientist"
+    seed_file: ./seeds/data-scientist.txt
