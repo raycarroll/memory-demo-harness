@@ -87,22 +87,24 @@ class ResponseJudge:
 
 For each response, evaluate on a scale of 0-10 considering:
 
-1. **Relevance** - Does it answer the question?
-2. **Accuracy** - Is the information correct?
-3. **Memory Alignment** - Does it use the user's known preferences/context appropriately?
-4. **Specificity** - Is it tailored vs generic?
-5. **Efficiency** - Does it get to the answer without unnecessary clarifications?
+1. **Relevance** - Does it address the user's question?
+2. **Accuracy** - Is the information factually correct?
+3. **Completeness** - Does it provide sufficient detail and thoroughness?
+4. **Clarity** - Is it well-structured and easy to understand?
+5. **Helpfulness** - Can the user act on this response to solve their need?
+
+Judge both responses using the SAME criteria. Do not penalize Response B for lacking memory context it doesn't have access to.
 
 ## Output Format
 
 Provide your evaluation in this EXACT format:
 
 RESPONSE_A_SCORE: X.X
-RESPONSE_A_JUSTIFICATION: Brief explanation (1-2 sentences) focusing on how well it used memory/context
+RESPONSE_A_JUSTIFICATION: Brief explanation (1-2 sentences) on response quality - relevance, accuracy, completeness, clarity, helpfulness
 MEMORY_INFLUENCED_SEGMENTS: ["quote 1 from response A that used memory", "quote 2", ...]
 
 RESPONSE_B_SCORE: X.X
-RESPONSE_B_JUSTIFICATION: Brief explanation (1-2 sentences) focusing on what it missed without context
+RESPONSE_B_JUSTIFICATION: Brief explanation (1-2 sentences) on response quality - relevance, accuracy, completeness, clarity, helpfulness
 
 **For MEMORY_INFLUENCED_SEGMENTS:**
 - Extract short quotes (5-15 words) from Response A that directly used the user's memories
@@ -111,7 +113,7 @@ RESPONSE_B_JUSTIFICATION: Brief explanation (1-2 sentences) focusing on what it 
 - Return as a JSON array of strings
 - If no memory was used, return: []
 
-Be concise and specific. Focus on how memory/context affected quality.
+Be objective and fair. Judge both responses on the same quality criteria. Response A may score higher naturally due to having context, but evaluate what each response delivers, not what it had access to.
 """
 
         return prompt
