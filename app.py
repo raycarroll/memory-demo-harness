@@ -12,6 +12,19 @@ from memory_backends import create_memory_backend
 from judge import ResponseJudge
 from lib.ui_components import highlight_memory_segments
 from demo_player import DemoPlayer, get_available_demos
+from simulated_mode import SimulatedMode
+from simulated_goals import (
+    GoalType,
+    Goal,
+    create_pod_fix_goal,
+    create_research_goal,
+    create_decision_goal,
+    create_deployment_goal,
+    create_document_goal,
+    create_plan_goal
+)
+from outcome_verification import OutcomeCheck, OutcomeVerifier, VerificationStatus
+from tool_registry import ToolRegistry, get_suggested_tools
 
 # Load environment variables from .env file
 load_dotenv()
@@ -426,18 +439,309 @@ if mode == "Demo Playback":
 
     st.divider()
 
-# Chat input (always visible in all modes)
+# Simulated Mode
 if mode == "Simulated":
-    st.info("🤖 Simulated mode coming soon - use 'User-Driven' or 'Demo Playback' for now")
-    prompt = None  # Disable input in simulated mode for now
-else:
-    # Show chat input for both User-Driven and Demo Playback modes
+    st.markdown("### 🤖 Simulated Mode - Goal-Driven Execution")
+    st.caption("Agent works autonomously toward a goal. Conversation appears in columns above, results below.")
+
+    # Initialize simulated mode state
+    if "simulation_running" not in st.session_state:
+        st.session_state.simulation_running = False
+    if "simulation_result" not in st.session_state:
+        st.session_state.simulation_result = None
+
+    if not st.session_state.simulation_running and st.session_state.simulation_result is None:
+        # Goal Configuration UI
+        st.write("Define a goal with measurable outcome:")
+
+        col1, col2 = st.columns([1, 1])
+
+        with col1:
+            goal_template = st.selectbox(
+                "Goal Template",
+                options=[
+                    "custom",
+                    "fix-pod",
+                    "research-topic",
+                    "make-decision",
+                    "deploy-version",
+                    "create-document",
+                    "create-plan"
+                ],
+                format_func=lambda x: {
+                    "custom": "Custom Goal",
+                    "fix-pod": "Fix Failing Pod",
+                    "research-topic": "Research Topic",
+                    "make-decision": "Make Decision",
+                    "deploy-version": "Deploy Version",
+                    "create-document": "Create Document",
+                    "create-plan": "Create Plan"
+                }[x]
+            )
+
+        with col2:
+            max_turns = st.number_input("Max Turns", min_value=5, max_value=50, value=15)
+
+        # Template-specific configuration
+        if goal_template == "fix-pod":
+            # Show suggested tools
+            suggested_tools = get_suggested_tools("fix-pod")
+            st.caption(f"🔧 Tools: {', '.join(suggested_tools)}")
+
+            pod_label = st.text_input("Pod Label", value="app=memoryhub-api")
+            namespace = st.text_input("Namespace", value="memoryhub")
+
+            if st.button("🚀 Start Simulation", type="primary"):
+                goal = create_pod_fix_goal(pod_label, namespace)
+                goal.max_turns = max_turns
+                st.session_state.simulation_goal = goal
+                st.session_state.simulation_running = True
+                st.rerun()
+
+        elif goal_template == "research-topic":
+            # Show suggested tools
+            suggested_tools = get_suggested_tools("research-topic")
+            st.caption(f"🔧 Tools: {', '.join(suggested_tools)}")
+
+            topic = st.text_input("Research Topic", value="AI memory systems")
+            output_file = st.text_input("Output File", value="/tmp/research_report.md")
+            min_sources = st.number_input("Min Sources", min_value=1, max_value=20, value=5)
+
+            if st.button("🚀 Start Simulation", type="primary"):
+                goal = create_research_goal(topic, output_file, min_sources)
+                goal.max_turns = max_turns
+                st.session_state.simulation_goal = goal
+                st.session_state.simulation_running = True
+                st.rerun()
+
+        elif goal_template == "make-decision":
+            # Show suggested tools
+            suggested_tools = get_suggested_tools("make-decision")
+            st.caption(f"🔧 Tools: {', '.join(suggested_tools)}")
+
+            decision = st.text_input("Decision to Make", value="Which technology stack to use?")
+            options_str = st.text_input("Options (comma-separated)", value="Option A, Option B, Option C")
+            options = [opt.strip() for opt in options_str.split(",")]
+
+            if st.button("🚀 Start Simulation", type="primary"):
+                goal = create_decision_goal(decision, options)
+                goal.max_turns = max_turns
+                st.session_state.simulation_goal = goal
+                st.session_state.simulation_running = True
+                st.rerun()
+
+        elif goal_template == "custom":
+            st.write("**Custom Goal Configuration**")
+
+            goal_desc = st.text_area("Goal Description", value="Describe what you want to achieve")
+
+            # Load tool registry
+            tool_registry = ToolRegistry.from_config("config.yaml")
+            tools_by_category = tool_registry.get_tools_by_category()
+
+            # Tool selection by category
+            st.write("**Select Required Tools**")
+
+            selected_tools = []
+            for category, tools_list in sorted(tools_by_category.items()):
+                with st.expander(f"📦 {category.title()} Tools"):
+                    category_selected = st.multiselect(
+                        f"Select {category} tools",
+                        options=[tool.name for tool in tools_list],
+                        format_func=lambda name: f"{name} - {tool_registry.get_description(name)}",
+                        key=f"tools_cat_{category}"
+                    )
+                    selected_tools.extend(category_selected)
+
+            if selected_tools:
+                st.caption(f"✓ Selected: {', '.join(selected_tools)}")
+            else:
+                st.warning("⚠️ No tools selected - agent will have limited capabilities")
+
+            verify_instruction = st.text_area("Verification Instruction",
+                                             value="How to check if goal is achieved")
+            success_criteria = st.text_area("Success Criteria",
+                                           value="What success looks like")
+
+            if st.button("🚀 Start Simulation", type="primary"):
+                # Validate tools
+                missing_tools = Goal(
+                    goal_type=GoalType.SOLVE,
+                    description=goal_desc,
+                    required_tools=selected_tools,
+                    outcome_check=OutcomeCheck(
+                        instruction=verify_instruction,
+                        required_tools=selected_tools,
+                        success_criteria=success_criteria
+                    )
+                ).validate_tools(tool_registry.get_available_tools())
+
+                if missing_tools:
+                    st.error(f"❌ Tools not available: {', '.join(missing_tools)}")
+                else:
+                    goal = Goal(
+                        goal_type=GoalType.SOLVE,
+                        description=goal_desc,
+                        required_tools=selected_tools,
+                        outcome_check=OutcomeCheck(
+                            instruction=verify_instruction,
+                            required_tools=selected_tools,
+                            success_criteria=success_criteria
+                        ),
+                        max_turns=max_turns
+                    )
+                    st.session_state.simulation_goal = goal
+                    st.session_state.simulation_running = True
+                    st.rerun()
+
+        else:
+            st.info(f"Template '{goal_template}' configuration coming soon. Use 'Custom Goal' or 'Fix Failing Pod' for now.")
+
+    elif st.session_state.simulation_running:
+        # Simulation in progress
+        goal = st.session_state.simulation_goal
+
+        st.write(f"**Goal:** {goal.description}")
+        st.write(f"**Max Turns:** {goal.max_turns}")
+
+        # Progress placeholder
+        progress_container = st.empty()
+        status_container = st.empty()
+
+        with progress_container:
+            st.info("🔄 Simulation starting...")
+
+        try:
+            # Create verifier
+            verifier = OutcomeVerifier(st.session_state.driver.agent)
+
+            # Create simulator
+            simulator = SimulatedMode(st.session_state.driver, verifier)
+
+            # Load persona context if available
+            persona_context = None
+            if persona_config.get("seed_file"):
+                try:
+                    with open(persona_config["seed_file"]) as f:
+                        persona_context = f.read()
+                except:
+                    pass
+
+            # Run simulation
+            with st.spinner("Running simulation..."):
+                result = simulator.run(goal, persona_context=persona_context)
+
+            # Store result
+            st.session_state.simulation_result = result
+            st.session_state.simulation_running = False
+
+            # Update messages for display
+            st.session_state.left_messages = result.left_messages
+            st.session_state.right_messages = result.right_messages
+
+            st.rerun()
+
+        except Exception as e:
+            st.error(f"Simulation failed: {e}")
+            st.session_state.simulation_running = False
+            if st.button("Reset"):
+                st.session_state.simulation_result = None
+                st.rerun()
+
+    else:
+        # Simulation complete - show results
+        result = st.session_state.simulation_result
+        goal = st.session_state.simulation_goal
+
+        st.write(f"**Goal:** {goal.description}")
+
+        # Verification Result
+        st.divider()
+        st.subheader("📊 Verification Result")
+
+        if result.final_verification:
+            v = result.final_verification
+
+            if v.status == VerificationStatus.PASS:
+                st.success(f"✅ **PASS** (Confidence: {v.confidence:.1%})")
+            elif v.status == VerificationStatus.FAIL:
+                st.error(f"❌ **FAIL** (Confidence: {v.confidence:.1%})")
+            else:
+                st.warning(f"❓ **{v.status.value.upper()}** (Confidence: {v.confidence:.1%})")
+
+            with st.expander("📋 Evidence", expanded=True):
+                st.write(v.evidence if v.evidence else "No evidence provided")
+
+            with st.expander("🔍 Reasoning"):
+                st.write(v.reasoning if v.reasoning else "No reasoning provided")
+
+            if v.strict_mode_used:
+                st.caption("⚙️ Strict validator was used")
+
+        # Metrics
+        st.divider()
+        st.subheader("📈 Metrics")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric("Turns Used", f"{result.turn}/{goal.max_turns}")
+
+        with col2:
+            if result.total_tokens_right > 0:
+                savings = ((result.total_tokens_right - result.total_tokens_left) / result.total_tokens_right) * 100
+                st.metric("Token Savings", f"{savings:.1f}%",
+                         delta=f"{result.total_tokens_right - result.total_tokens_left:,} tokens")
+
+        with col3:
+            duration = (result.completed_at - result.started_at).total_seconds()
+            st.metric("Duration", f"{duration:.1f}s")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Tokens (With Memory)", f"{result.total_tokens_left:,}")
+        with col2:
+            st.metric("Tokens (Without Memory)", f"{result.total_tokens_right:,}")
+
+        # Verification History
+        if result.verification_history:
+            st.divider()
+            with st.expander(f"📜 Verification History ({len(result.verification_history)} checks)"):
+                for i, v in enumerate(result.verification_history, 1):
+                    status_icon = "✅" if v.status == VerificationStatus.PASS else "❌"
+                    st.write(f"**Check {i}:** {status_icon} {v.status.value.upper()}")
+                    st.caption(f"Evidence: {v.evidence[:100]}..." if len(v.evidence) > 100 else v.evidence)
+
+        # Actions
+        st.divider()
+        col1, col2 = st.columns(2)
+
+        with col1:
+            if st.button("🔄 Run Another Simulation", use_container_width=True):
+                st.session_state.simulation_result = None
+                st.session_state.left_messages = []
+                st.session_state.right_messages = []
+                st.rerun()
+
+        with col2:
+            if st.button("💾 Export Results", use_container_width=True):
+                # Export to JSON (simplified)
+                st.download_button(
+                    "Download JSON",
+                    data=f'{{"goal": "{goal.description}", "status": "{result.final_verification.status.value}", "turns": {result.turn}}}',
+                    file_name="simulation_result.json",
+                    mime="application/json"
+                )
+
+# Chat input (visible in User-Driven and Demo Playback modes)
+elif mode in ["User-Driven", "Demo Playback"]:
+    # Show chat input
     input_placeholder = "Type your message here..." if mode == "User-Driven" else "Type to send manual message (or use Next Step above)..."
     prompt = st.chat_input(input_placeholder)
 
-# Handle manual input (works in both User-Driven and Demo Playback modes)
-if prompt:
-    execute_prompt(prompt, from_demo=False)
+    # Handle manual input
+    if prompt:
+        execute_prompt(prompt, from_demo=False)
 
 # Memory Inspector Dialog
 @st.dialog("🔍 Memory Inspector", width="large")

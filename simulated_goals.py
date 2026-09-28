@@ -56,6 +56,20 @@ class Goal:
     completed: bool = False
     success: bool = False
 
+    def validate_tools(self, available_tools: list[str]) -> list[str]:
+        """Validate required tools are available.
+
+        Args:
+            available_tools: List of tool names that are available
+
+        Returns:
+            List of missing tool names (empty if all available)
+        """
+        available_set = set(available_tools)
+        required_set = set(self.required_tools)
+        missing = required_set - available_set
+        return list(missing)
+
 
 # Pre-built goal templates
 

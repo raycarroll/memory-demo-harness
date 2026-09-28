@@ -50,3 +50,52 @@ personas:
     name: "Alex Morgan - VP of Operations"
     description: "C-level executive managing operations, digital transformation, team leadership"
     seed_file: ./seeds/executive.txt
+
+# Available tools for simulated mode
+tools:
+  infrastructure:
+    - name: kubectl
+      description: "Kubernetes CLI - get/describe/logs/set resources"
+      enabled: true
+    - name: oc
+      description: "OpenShift CLI - deploy/rollout/project management"
+      enabled: true
+
+  filesystem:
+    - name: file_read
+      description: "Read file contents"
+      enabled: true
+    - name: file_write
+      description: "Write/create files"
+      enabled: true
+    - name: bash
+      description: "Execute bash commands"
+      enabled: true
+
+  research:
+    - name: web_search
+      description: "Search the web for information"
+      enabled: true
+
+  api:
+    - name: http_request
+      description: "Make HTTP API calls"
+      enabled: true
+
+  data:
+    - name: database_query
+      description: "Execute SQL queries"
+      enabled: true
+    - name: data_query
+      description: "Query data sources"
+      enabled: true
+
+  visualization:
+    - name: chart_generate
+      description: "Generate charts and visualizations"
+      enabled: true
+
+  utilities:
+    - name: calendar_read
+      description: "Read calendar/schedule"
+      enabled: true
