@@ -174,39 +174,39 @@ DEMO_SCRIPTS = {
     ),
 
     "executive-assistant": DemoScript(
-        name="Executive Assistant - Business Support",
-        description="7-minute demo showing memory benefits for executive decision-making",
+        name="Executive Under Pressure",
+        description="7-minute demo: New VP with 90 days to turn around operations or lose key contract",
         persona="executive",
         memory_backend="dict",
         enable_judge=True,
         steps=[
             DemoStep(
-                user_message="I need to prepare for next week's board meeting - what should be on the agenda?",
-                annotation="💼 **Setup:** Agent learns role (VP Ops), meeting schedule, current initiatives",
+                user_message="Patricia Chen is pushing hard for Ohio plant closure in next week's board meeting - help me build a counter-argument",
+                annotation="💼 **Setup:** Learns specific situation (6 weeks in role, difficult board member, plant decision pressure)",
                 wait_seconds=8.0,
                 highlight_metrics=["highlights"]
             ),
             DemoStep(
-                user_message="What data should I include in my quarterly report?",
-                annotation="💡 **Watch:** Left knows digital transformation focus, Right asks 'which metrics?'",
+                user_message="I need to fix the inventory accuracy problem before we lose Midwest Healthcare - what's the fastest path?",
+                annotation="⚡ **Context-aware:** Left knows 73% accuracy, 90-day deadline, surgical equipment stakes; Right asks for details",
                 wait_seconds=8.0,
                 highlight_metrics=["highlights", "tokens"]
             ),
             DemoStep(
-                user_message="I'm traveling to our Ohio facility next week - what should I prioritize?",
-                annotation="⚡ **Context-aware:** Left recalls facilities + operational focus, Right gives generic travel tips",
+                user_message="The supplier in Monterrey wants to renegotiate - should I take the meeting myself or send Sarah?",
+                annotation="🎯 **Relationship-aware:** Left knows Sarah (trusted Logistics Director), delegation advice; Right doesn't know Sarah",
                 wait_seconds=8.0,
                 highlight_metrics=["highlights", "scores"]
             ),
             DemoStep(
-                user_message="Help me draft talking points for the cost reduction initiative",
-                annotation="🎯 **Personalized:** Left references team size, efficiency goals; Right asks for background",
+                user_message="Tom keeps blocking every change I propose in Quality - how do I handle this?",
+                annotation="💡 **People context:** Left recalls Tom's hostility, 90-day pressure; Right gives generic management advice",
                 wait_seconds=8.0,
                 highlight_metrics=["scores", "token_savings"]
             ),
             DemoStep(
-                user_message="What should I delegate to my department heads this week?",
-                annotation="📊 **Final:** Check cumulative efficiency - knows team structure, priorities, timeline",
+                user_message="I need to leave at 5 PM today for my kids but the shift handoff report isn't done - what do I do?",
+                annotation="📊 **Final:** Knows family commitment (twins, 5-7 PM sacred), delegation struggles, mentor's advice",
                 wait_seconds=8.0,
                 highlight_metrics=["token_savings", "scores"]
             ),

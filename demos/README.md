@@ -48,18 +48,20 @@ Demonstrates learning acceleration:
 
 **Key metrics:** Highlights, quality scores
 
-### 5. Executive Assistant (7 minutes)
-**Persona:** VP of Operations  
-**Best for:** Business executives, enterprise audiences, managers
+### 5. Executive Under Pressure (7 minutes)
+**Persona:** Alex Morgan - New VP, 90 days to turn around operations  
+**Best for:** Business executives, leadership teams, high-stakes decision-makers
 
-Shows executive productivity gains:
-- Board meeting preparation
-- Strategic reporting guidance
-- Facility visit prioritization
-- Cost reduction initiatives
-- Delegation planning
+Real pressure scenario with named stakeholders:
+- Difficult board member (Patricia) pushing plant closure
+- 90-day deadline to save major contract (Midwest Healthcare)
+- Delegation dilemma (send trusted Sarah or handle yourself?)
+- Hostile colleague (Tom) blocking changes
+- Work-life balance with twins at home
 
-**Key metrics:** Highlights, time savings, context retention across business areas
+**Key metrics:** Context retention across politics, operations, people, personal life. Shows memory tracking relationships, deadlines, and human constraints.
+
+**Why compelling:** Real names, real stakes, real pressure. Not generic advice.
 
 ## How to Use
 
