@@ -12,6 +12,7 @@ Visual proof that memory improves agent quality and efficiency:
 - 🔍 **Memory inspector** - View what's stored in real-time
 - 👤 **Pre-loaded personas** - Demo with 13+ facts already loaded
 - 🎬 **Demo playback** - Pre-scripted conversations for hands-free presentations
+- 🤖 **Simulated mode** - Goal-driven autonomous execution with measurable outcomes (not just conversation metrics)
 
 ## Quick Start
 
@@ -35,7 +36,7 @@ Open `http://localhost:8501` in your browser.
 **Three modes:**
 - **User-Driven** - Interactive conversation (you type questions)
 - **Demo Playback** - Pre-scripted demos (automated presentations)
-- **Simulated** - AI-guided conversation (coming soon)
+- **Simulated** - Goal-driven autonomous execution with measurable outcomes
 
 ## Live Demo
 
@@ -117,6 +118,24 @@ Pre-scripted conversations for presentations:
 - Progress tracking
 - 5-8 minute durations
 - Reproducible results
+
+### 7. Simulated Mode
+Goal-driven autonomous execution with measurable outcomes:
+- Define goals with natural language success criteria
+- Agent works autonomously using tools
+- LLM-based outcome verification (not just conversation metrics)
+- 5 goal types: Information, Solve, Decide, Create, Plan
+- Pre-built templates for common scenarios
+- Measurable results: PASS/FAIL with evidence
+- Optional strict validators for critical checks
+- See [docs/simulated-mode.md](docs/simulated-mode.md) for details
+
+**Example:**
+```python
+goal = create_pod_fix_goal("app=memoryhub-api", "memoryhub")
+result = simulator.run(goal)
+# Verifiable outcome: Is pod actually Running? (not just discussed)
+```
 
 ## Configuration
 
@@ -204,7 +223,16 @@ Measure memory impact quantitatively:
 - Export data for analysis
 - A/B test memory strategies
 
-### 4. Documentation
+### 4. Automated Testing
+Use simulated mode for goal-driven testing:
+- Define goals with measurable outcomes
+- Run autonomous simulations
+- Get objective PASS/FAIL results (not subjective)
+- Test: pod fixes, deployments, document creation
+- Benchmark memory efficiency on real tasks
+- See [docs/simulated-mode.md](docs/simulated-mode.md)
+
+### 5. Documentation
 Generate comparison screenshots:
 - Visual proof for docs
 - Before/after examples
@@ -288,6 +316,9 @@ memory-demo-harness/
 ├── memory_backends.py       # Memory system adapters
 ├── judge.py                 # LLM-as-judge evaluator
 ├── demo_player.py           # Demo script playback engine
+├── simulated_mode.py        # Goal-driven autonomous execution
+├── simulated_goals.py       # Goal templates and definitions
+├── outcome_verification.py  # LLM-based outcome verification
 ├── config.yaml              # Default configuration
 ├── lib/
 │   └── ui_components.py     # Highlighting helpers
@@ -295,7 +326,8 @@ memory-demo-harness/
 ├── demos/                   # Demo scripts and guides
 │   ├── README.md            # Demo usage guide
 │   └── quick-wins.md        # Detailed script with talking points
-├── examples/                # Example configs
+├── examples/                # Example configs and usage
+│   └── simulated_mode_example.py  # Simulated mode examples
 ├── docs/                    # Detailed documentation
 └── tests/                   # Test suite
 ```
@@ -307,6 +339,7 @@ memory-demo-harness/
 - [Token Tracking](docs/token-tracking.md) - Efficiency metrics
 - [Memory Inspector](docs/memory-inspector.md) - Viewing stored memories
 - [Demo Playback](demos/README.md) - Using pre-scripted demos
+- [Simulated Mode](docs/simulated-mode.md) - Goal-driven autonomous execution with measurable outcomes
 - [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues
 
 ## Contributing
